@@ -165,15 +165,15 @@ export default function CreateTask({ navigation, route }) {
     setAlarmSet(!isAlarmSet);
   };
 
-  const synchronizeCalendar = async () => {
-    const calendarId = await createNewCalendar();
-    try {
-      const createEventId = await addEventsToCalendar(calendarId);
-      handleCreateEventData(createEventId);
-    } catch (e) {
-      Alert.alert(e.message);
-    }
-  };
+  // const synchronizeCalendar = async () => {
+  //   const calendarId = await createNewCalendar();
+  //   try {
+  //     const createEventId = await addEventsToCalendar(calendarId);
+  //     handleCreateEventData(createEventId);
+  //   } catch (e) {
+  //     // Alert.alert(e.message);
+  //   }
+  // };
 
   const addEventsToCalendar = async (calendarId) => {
     const event = {
@@ -432,7 +432,7 @@ export default function CreateTask({ navigation, route }) {
               ]}
               onPress={async () => {
                 if (isAlarmSet) {
-                  await synchronizeCalendar();
+                  // await synchronizeCalendar();
                 }
                 if (!isAlarmSet) {
                   handleCreateEventData();
