@@ -12601,10 +12601,10 @@
   "resolved" "https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz"
   "version" "17.0.2"
 
-"react-native-calendar-strip@^2.2.3":
-  "integrity" "sha512-YWxG2tRn7lr3yzJs8gsBPCO+Uj3n6zRLtqs1g75TszGeJEh7ZBz7p8FbQCQ2uzN80Pu/gV2e4og9nshnIymCww=="
-  "resolved" "https://registry.npmjs.org/react-native-calendar-strip/-/react-native-calendar-strip-2.2.3.tgz"
-  "version" "2.2.3"
+"react-native-calendar-strip@^2.2.5":
+  "integrity" "sha512-3DmHIJX+Uu9Nv2wNTViPOGBY7rvODaHl7xaaxuqDFTN4sCxeM+1ref8k5RE1PgyZ3Wqs4Z8XJoEyORQIc++VMA=="
+  "resolved" "https://registry.npmjs.org/react-native-calendar-strip/-/react-native-calendar-strip-2.2.5.tgz"
+  "version" "2.2.5"
   dependencies:
     "moment" ">=2.0.0"
     "node-git-hooks" "^1.0.1"

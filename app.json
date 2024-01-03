@@ -27,6 +27,11 @@
     },
     "android": {
       "package": "com.savio629.notificationapp"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "79b373fd-7938-46d8-9048-4fa37899b5e1"
+      }
     }
   }
 }
