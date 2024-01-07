@@ -21,6 +21,7 @@ import { useKeyboardHeight } from '@calendar/hooks';
 import { useStore } from '@calendar/store';
 import { Routes } from '@calendar/navigation';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Notifications } from 'expo-notifications';
 
 const { width: vw } = Dimensions.get('window');
 // moment().format('YYYY/MM/DD')
@@ -165,15 +166,26 @@ export default function CreateTask({ navigation, route }) {
     setAlarmSet(!isAlarmSet);
   };
 
-  // const synchronizeCalendar = async () => {
-  //   const calendarId = await createNewCalendar();
-  //   try {
-  //     const createEventId = await addEventsToCalendar(calendarId);
-  //     handleCreateEventData(createEventId);
-  //   } catch (e) {
-  //     // Alert.alert(e.message);
-  //   }
-  // };
+  const synchronizeCalendar = async () => {
+    const calendarId = await createNewCalendar();
+    try {
+      const createEventId = await addEventsToCalendar(calendarId);
+      handleCreateEventData(createEventId);
+    } catch (e) {
+       Alert.alert(e.message);
+    }
+  };
+
+  const sendNotification = async (title, body, trigger) => {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title,
+        body,
+        data: { data: 'goes here' },
+      },
+      trigger,
+    });
+  };  
 
   const addEventsToCalendar = async (calendarId) => {
     const event = {
@@ -181,7 +193,7 @@ export default function CreateTask({ navigation, route }) {
       notes: notesText,
       startDate: moment(alarmTime).add(0, 'm').toDate(),
       endDate: moment(alarmTime).add(5, 'm').toDate(),
-      timeZone: Localization.timezone
+      timeZone: 'Asia/Kolkata'
     };
 
     try {
@@ -189,6 +201,13 @@ export default function CreateTask({ navigation, route }) {
         calendarId.toString(),
         event
       );
+      if (isAlarmSet) {
+        // Send notification if alarm is set
+        const title = 'Task Reminder';
+        const body = `Don't forget: ${taskText}`;
+        const trigger = new Date(moment(alarmTime).toISOString());
+        sendNotification(title, body, { date: trigger });
+      }
       return createEventAsyncResNew;
     } catch (error) {
       console.log(error);
@@ -432,7 +451,7 @@ export default function CreateTask({ navigation, route }) {
               ]}
               onPress={async () => {
                 if (isAlarmSet) {
-                  // await synchronizeCalendar();
+                  await synchronizeCalendar();
                 }
                 if (!isAlarmSet) {
                   handleCreateEventData();

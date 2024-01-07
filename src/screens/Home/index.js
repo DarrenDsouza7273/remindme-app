@@ -15,7 +15,7 @@ import {
 import moment from 'moment';
 import * as Calendar from 'expo-calendar';
 import * as Localization from 'expo-localization';
-
+import ExcelParserComponent from '../excel/excel';
 import CalendarStrip from 'react-native-calendar-strip';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { Task } from '@calendar/components';
@@ -177,36 +177,37 @@ export default function Home({ navigation }) {
 
   const handleDeletePreviousDayTask = async (oldTodo) => {
     try {
-      if (oldTodo !== []) {
-        const todayDate = `${moment().format('YYYY')}-${moment().format(
-          'MM'
-        )}-${moment().format('DD')}`;
+      if (oldTodo && oldTodo.length > 0) {
+        const todayDate = `${moment().format('YYYY')}-${moment().format('MM')}-${moment().format('DD')}`;
         const checkDate = moment(todayDate);
-        await oldTodo.filter((item) => {
+  
+        for (const item of oldTodo) {
           const currDate = moment(item.date);
           const checkedDate = checkDate.diff(currDate, 'days');
+       
           if (checkedDate > 0) {
-            item.todoList.forEach(async (listValue) => {
-              try {
-                await Calendar.deleteEventAsync(
-                  listValue.alarm.createEventAsyncRes.toString()
-                );
-              } catch (error) {
-                console.log(error);
-              }
-            });
-            return false;
+             for (const listValue of item.todoList) {
+                try {
+                   const eventId = listValue.alarm?.createEventAsyncRes?.toString();
+                   if (eventId) {
+                      await Calendar.deleteEventAsync(eventId);
+                   }
+                } catch (error) {
+                   console.log(error);
+                }
+             }
+             return false;
           }
-          return true;
-        });
-
+       }
         // await AsyncStorage.setItem('TODO', JSON.stringify(updatedList));
         updateCurrentTask(currentDate);
       }
     } catch (error) {
-      // Error retrieving data
+      console.log(error);
+      // Handle the error appropriately
     }
   };
+  
 
   const handleModalVisible = () => {
     setModalVisible(!isModalVisible);
@@ -214,7 +215,7 @@ export default function Home({ navigation }) {
 
   const updateCurrentTask = async (currentDate) => {
     try {
-      if (todo !== [] && todo) {
+      if (todo.length > 0 && todo) {
         const markDot = todo.map((item) => item.markedDot);
         const todoLists = todo.filter((item) => {
           if (currentDate === item.date) {
@@ -262,7 +263,7 @@ export default function Home({ navigation }) {
       notes: selectedTask.notes,
       startDate: moment(selectedTask?.alarm.time).add(0, 'm').toDate(),
       endDate: moment(selectedTask?.alarm.time).add(5, 'm').toDate(),
-      timeZone: Localization.timezone
+      timeZone: 'Asia/Kolkata'
     };
 
     if (!selectedTask?.alarm.createEventAsyncRes) {
@@ -592,6 +593,7 @@ export default function Home({ navigation }) {
             setCurrentDate(selectedDate);
           }}
         />
+        <ExcelParserComponent/>
         <TouchableOpacity
           onPress={() =>
             navigation.navigate('CreateTask', {
