@@ -21,7 +21,6 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import { Task } from '@calendar/components';
 import { useStore } from '@calendar/store';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
 const styles = StyleSheet.create({
   taskListContent: {
     height: 100,
@@ -141,6 +140,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     elevation: 5,
     padding: 22
+  },
+  signInButton: {
+    backgroundColor: '#2E66E7',
+    padding: 15,
+    borderRadius: 5,
+    margin: 20,
+    width: 100,
   }
 });
 
@@ -151,7 +157,7 @@ const datesWhitelist = [
   }
 ];
 
-export default function Home({ navigation }) {
+export default function Home({ navigation,Routes }) {
   const { updateSelectedTask, deleteSelectedTask, todo } = useStore(
     (state) => ({
       updateSelectedTask: state.updateSelectedTask,
@@ -593,7 +599,13 @@ export default function Home({ navigation }) {
             setCurrentDate(selectedDate);
           }}
         />
+        <View style={{    justifyContent: 'center',
+    alignItems: 'center'}}>
         <ExcelParserComponent/>
+        <TouchableOpacity style={styles.signInButton} onPress={() => navigation.navigate('Setting')}>
+  <Text style={{  color: '#fff'}}>Setting</Text>
+</TouchableOpacity>
+</View>
         <TouchableOpacity
           onPress={() =>
             navigation.navigate('CreateTask', {

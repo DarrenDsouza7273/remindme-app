@@ -21,7 +21,32 @@ import { useKeyboardHeight } from '@calendar/hooks';
 import { useStore } from '@calendar/store';
 import { Routes } from '@calendar/navigation';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Notifications } from 'expo-notifications';
+import * as Notifications from 'expo-notifications';
+
+// First, set the handler that will cause the notification
+// to show the alert
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
+const scheduleNotification = async (title, body, trigger) => {
+  try {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: title,
+        body: body,
+      },
+      trigger: trigger,
+    });
+  } catch (error) {
+    console.error('Error scheduling notification:', error);
+  }
+};
+// Second, call the method
 
 const { width: vw } = Dimensions.get('window');
 // moment().format('YYYY/MM/DD')
@@ -126,8 +151,9 @@ const styles = StyleSheet.create({
 });
 
 export default function CreateTask({ navigation, route }) {
-  const { updateTodo } = useStore((state) => ({
-    updateTodo: state.updateTodo
+  const { updateTodo,todo } = useStore((state) => ({
+    updateTodo: state.updateTodo,
+    todo: state.todo
   }));
 
   const keyboardHeight = useKeyboardHeight();
@@ -176,16 +202,6 @@ export default function CreateTask({ navigation, route }) {
     }
   };
 
-  const sendNotification = async (title, body, trigger) => {
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title,
-        body,
-        data: { data: 'goes here' },
-      },
-      trigger,
-    });
-  };  
 
   const addEventsToCalendar = async (calendarId) => {
     const event = {
@@ -201,13 +217,6 @@ export default function CreateTask({ navigation, route }) {
         calendarId.toString(),
         event
       );
-      if (isAlarmSet) {
-        // Send notification if alarm is set
-        const title = 'Task Reminder';
-        const body = `Don't forget: ${taskText}`;
-        const trigger = new Date(moment(alarmTime).toISOString());
-        sendNotification(title, body, { date: trigger });
-      }
       return createEventAsyncResNew;
     } catch (error) {
       console.log(error);
@@ -357,17 +366,17 @@ export default function CreateTask({ navigation, route }) {
               <View style={{ flexDirection: 'row' }}>
                 <View style={styles.readBook}>
                   <Text style={{ textAlign: 'center', fontSize: 14 }}>
-                    Read book
+                    Assignment
                   </Text>
                 </View>
                 <View style={styles.design}>
                   <Text style={{ textAlign: 'center', fontSize: 14 }}>
-                    Design
+                    Practical
                   </Text>
                 </View>
                 <View style={styles.learn}>
                   <Text style={{ textAlign: 'center', fontSize: 14 }}>
-                    Learn
+                    Event
                   </Text>
                 </View>
               </View>
@@ -452,6 +461,27 @@ export default function CreateTask({ navigation, route }) {
               onPress={async () => {
                 if (isAlarmSet) {
                   await synchronizeCalendar();
+                  // try {
+                  //   if (todo.length > 0 && todo) {
+                  //     const todoLists = todo.filter((item) => {
+                  //     });
+                  //     if (todoLists.length !== 0) {
+                  //       setTodoList(todoLists[0].todoList);
+                  //     } else {
+                  //       setTodoList([]);
+                  //     }
+                  //   }
+                  // } catch (error) {
+                  //   console.log(todoLists[0].todoList);
+                  // }
+                  //console.log(todo[todo.length-1].todoList);
+                  console.log(alarmTime);
+                  const tempalarm=new Date(alarmTime);
+                  await scheduleNotification(
+                    taskText,
+                    notesText,
+                    tempalarm  // You can pass a trigger if needed
+                  );
                 }
                 if (!isAlarmSet) {
                   handleCreateEventData();

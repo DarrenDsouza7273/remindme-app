@@ -17,14 +17,13 @@ const ExcelFetcherComponent = () => {
         const fileInfo = await FileSystem.getInfoAsync(uri);
         const arrayBuffer = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
 
-        /* parse data */
         const wb = XLSX.read(arrayBuffer, { type: 'base64' });
 
-        /* Assuming you have only one sheet in the Excel file */
+        /* Assuming only one sheet in the Excel file */
         const sheetName = wb.SheetNames[0];
         const parsedData = XLSX.utils.sheet_to_json(wb.Sheets[sheetName]);
 
-        /* Log the parsed data */
+        /* Log the parsed data for testing*/
         console.log('Parsed Excel Data:', parsedData);
         setExcelData(parsedData);
       }
