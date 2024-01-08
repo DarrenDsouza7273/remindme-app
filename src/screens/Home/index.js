@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 5,
     margin: 20,
-    width: 100,
+    width: 90,
   }
 });
 
@@ -165,7 +165,11 @@ export default function Home({ navigation,Routes }) {
       todo: state.todo
     })
   );
+  const [extractedName, setExtractedName] = useState(null);
 
+  const handleNameExtracted = (name) => {
+    setExtractedName(name);
+  };
   const [todoList, setTodoList] = useState([]);
   const [markedDate, setMarkedDate] = useState([]);
   const [currentDate, setCurrentDate] = useState(
@@ -601,9 +605,13 @@ export default function Home({ navigation,Routes }) {
         />
         <View style={{    justifyContent: 'center',
     alignItems: 'center'}}>
-        <ExcelParserComponent/>
+        <ExcelParserComponent onNameExtracted={handleNameExtracted} />
+      {extractedName && (
+        <View>
+          <Text>Extracted Name: {extractedName}</Text>
+        </View>)}
         <TouchableOpacity style={styles.signInButton} onPress={() => navigation.navigate('Setting')}>
-  <Text style={{  color: '#fff'}}>Setting</Text>
+  <Text style={{  color: '#fff'}}>Settings</Text>
 </TouchableOpacity>
 </View>
         <TouchableOpacity

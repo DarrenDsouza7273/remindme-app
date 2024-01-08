@@ -4,7 +4,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import XLSX from 'xlsx';
 
-const ExcelFetcherComponent = () => {
+const ExcelFetcherComponent = ({onNameExtracted}) => {
   const [excelData, setExcelData] = useState(null);
 
   const fetchExcelData = async () => {
@@ -26,6 +26,10 @@ const ExcelFetcherComponent = () => {
         /* Log the parsed data for testing*/
         console.log('Parsed Excel Data:', parsedData);
         setExcelData(parsedData);
+        if (parsedData.length > 0 && parsedData[0].Name) {
+          onNameExtracted(parsedData[0].Name);
+        }
+        console.log(parsedData[0].Name);
       }
     } catch (error) {
       console.error('Error fetching or parsing Excel file', error);
