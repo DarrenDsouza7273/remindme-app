@@ -4,17 +4,17 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AppWrapper } from '@calendar/components';
 import { CalendarNavigation } from '@calendar/navigation';
 import * as Calendar from 'expo-calendar';
-
+import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 class App extends Component {
-  async componentDidMount() {
+async componentDidMount() {
     await this._askForCalendarPermissions();
     await this._askForReminderPermissions();
 
     StatusBar.pushStackEntry({
-      animated: true,
-      barStyle: 'dark-content'
+        animated: true,
+        barStyle: 'dark-content'
     });
-  }
+}
 
   _askForCalendarPermissions = async () => {
     const { status } = await Calendar.requestCalendarPermissionsAsync();
