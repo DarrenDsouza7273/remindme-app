@@ -155,7 +155,9 @@ export default function CreateTask({ navigation, route }) {
     updateTodo: state.updateTodo,
     todo: state.todo
   }));
-
+  useEffect(() => {
+    console.log(JSON.stringify(todo, null, 2));
+  }, [todo]);
   const keyboardHeight = useKeyboardHeight();
 
   const createNewCalendar = route.params?.createNewCalendar ?? (() => null);
@@ -264,6 +266,8 @@ export default function CreateTask({ navigation, route }) {
     navigation.navigate(Routes.HOME);
     await updateTodo(creatTodo);
     updateCurrentTask(currentDate);
+    console.log('creatTodo',creatTodo);
+
   };
 
   const handleDatePicked = (date) => {
@@ -475,7 +479,7 @@ export default function CreateTask({ navigation, route }) {
                   //   console.log(todoLists[0].todoList);
                   // }
                   //console.log(todo[todo.length-1].todoList);
-                  console.log(alarmTime);
+                  //console.log(alarmTime);
                   const tempalarm=new Date(alarmTime);
                   await scheduleNotification(
                     taskText,
