@@ -15,7 +15,8 @@ import {
 import moment from 'moment';
 import * as Calendar from 'expo-calendar';
 import * as Localization from 'expo-localization';
-import ExcelParserComponent from '../excel/excel';
+import { v4 as uuidv4 } from 'uuid';
+import ExcelFetcherComponent from '../excel/excel';
 import CalendarStrip from 'react-native-calendar-strip';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { Task } from '@calendar/components';
@@ -165,6 +166,61 @@ export default function Home({ navigation,Routes }) {
       todo: state.todo
     })
   );
+  
+   const { updateTodo} = useStore((state) => ({
+    updateTodo: state.updateTodo
+  }));
+  const handleCreateEventData = async ( name, date1) => {
+    const taskText = name;
+    const notesText = ''; // You can set notes based on your requirements
+    const alarmTime = ''; // Set the alarm time if needed
+    const isAlarmSet = false; // Set whether the alarm is on or off
+  
+    const creatTodo = {
+      key: uuidv4(),
+      date: date1,
+      todoList: [
+        {
+          key: uuidv4(),
+          title: taskText,
+          notes: notesText,
+          alarm: {
+            time: date1,
+            isOn: isAlarmSet,
+            //createEventAsyncRes: createEventId,
+          },
+          color: `rgb(${Math.floor(Math.random() * Math.floor(256))},${Math.floor(
+            Math.random() * Math.floor(256)
+          )},${Math.floor(Math.random() * Math.floor(256))})`,
+        },
+      ],
+      markedDot: {
+        date: date1,
+        dots: [
+          {
+            key: uuidv4(),
+            color: '#2E66E7',
+            selectedDotColor: '#2E66E7',
+          },
+        ],
+      },
+    };
+  
+    // Assuming updateTodo and updateCurrentTask functions are defined and work as expected
+    //navigation.navigate(Routes.HOME);
+    await updateTodo(creatTodo); // Assuming updateTodo expects an array of tasks
+    updateCurrentTask(currentDate);
+    console.log('creatTodo',creatTodo);
+    console.log('creatTodoa',creatTodo[0].alarm.time);
+  };
+  
+  
+  const handleCreateTasks = (parsedData) => {
+    // Assuming createEventId is available in your component
+    handleCreateEventData( parsedData[0].Name, parsedData[0].Date);
+  };
+
+
   const [extractedName, setExtractedName] = useState(null);
 
   const handleNameExtracted = (name) => {
@@ -557,7 +613,7 @@ export default function Home({ navigation,Routes }) {
         }}
       >
         <CalendarStrip
-          calendarAnimation={{ type: 'sequence', duration: 30 }}
+         // calendarAnimation={{ type: 'sequence', duration: 30 }}
           daySelectionAnimation={{
             type: 'background',
             duration: 200
@@ -601,15 +657,14 @@ export default function Home({ navigation,Routes }) {
             ).format('MM')}-${moment(date).format('DD')}`;
             updateCurrentTask(selectedDate);
             setCurrentDate(selectedDate);
+            
           }}
         />
         <View style={{    justifyContent: 'center',
     alignItems: 'center'}}>
-        <ExcelParserComponent onNameExtracted={handleNameExtracted} />
-      {extractedName && (
-        <View>
-          <Text>Extracted Name: {extractedName}</Text>
-        </View>)}
+        <ExcelFetcherComponent
+        onNameExtracted={handleNameExtracted}
+        onCreateTasks={handleCreateTasks}/>
         <TouchableOpacity style={styles.signInButton} onPress={() => navigation.navigate('Setting')}>
   <Text style={{  color: '#fff'}}>Settings</Text>
 </TouchableOpacity>
@@ -672,7 +727,7 @@ export default function Home({ navigation,Routes }) {
                         backgroundColor: item.color,
                         marginRight: 8
                       }}
-                    />
+                    />                    
                     <Text
                       style={{
                         color: '#554A4C',
@@ -709,6 +764,7 @@ export default function Home({ navigation,Routes }) {
                       >
                         {item.notes}
                       </Text>
+                      {/* {console.log('alarm',todoList)} */}
                     </View>
                   </View>
                 </View>

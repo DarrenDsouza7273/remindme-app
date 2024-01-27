@@ -266,6 +266,8 @@ export default function CreateTask({ navigation, route }) {
     navigation.navigate(Routes.HOME);
     await updateTodo(creatTodo);
     updateCurrentTask(currentDate);
+    console.log('creatTodo',creatTodo);
+
   };
 
   const handleDatePicked = (date) => {

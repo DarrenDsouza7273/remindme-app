@@ -21,7 +21,7 @@ const storeStates = {
 const storeMethods = (set, get) => ({
   init: async () => {
     try {
-      // await AsyncStorage.clear();
+      //await AsyncStorage.clear();
       const todo = await AsyncStorage.getItem('TODO');
       if (todo !== null) {
         set({ todo: JSON.parse(todo) });
