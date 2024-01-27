@@ -7,9 +7,11 @@ import XLSX from 'xlsx';
 const ExcelFetcherComponent = ({ onNameExtracted, onCreateTasks }) => {
   const [excelData, setExcelData] = useState(null);
   const [showexcelData, setshowExcelData] = useState(false);
+
   const showData = (showexcelData) => {
     setshowExcelData(!showexcelData);
-  }
+  };
+
   const fetchExcelData = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
@@ -30,8 +32,9 @@ const ExcelFetcherComponent = ({ onNameExtracted, onCreateTasks }) => {
         const parsedData = XLSX.utils.sheet_to_json(wb.Sheets[sheetName]);
 
         setExcelData(parsedData);
+
         if (parsedData.length > 0 && parsedData[0].Name) {
-          onNameExtracted(parsedData[0].Name, parsedData[0].Date);
+          onNameExtracted(parsedData.map(row => row.Name), parsedData.map(row => row.Date));
         }
       }
     } catch (error) {
@@ -40,7 +43,7 @@ const ExcelFetcherComponent = ({ onNameExtracted, onCreateTasks }) => {
   };
 
   return (
-    <View >
+    <View>
       <Text>Excel Fetcher Component</Text>
       <Button title="Fetch Excel Data" onPress={fetchExcelData} />
       {excelData && (
@@ -48,11 +51,11 @@ const ExcelFetcherComponent = ({ onNameExtracted, onCreateTasks }) => {
           <Button title="Show Parsed Events" onPress={() => showData(showexcelData)} />
           {showexcelData && (
             <View>
-          <Text>Parsed Excel Data:</Text>
-          {excelData.map((row, index) => (
-            <Text key={index}>{JSON.stringify(row)}</Text>
-          ))}
-          </View>
+              <Text>Parsed Excel Data:</Text>
+              {excelData.map((row, index) => (
+                <Text key={index}>{JSON.stringify(row)}</Text>
+              ))}
+            </View>
           )}
           <Button title="Create Tasks" onPress={() => onCreateTasks(excelData)} />
         </View>

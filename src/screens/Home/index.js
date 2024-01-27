@@ -170,13 +170,13 @@ export default function Home({ navigation,Routes }) {
    const { updateTodo} = useStore((state) => ({
     updateTodo: state.updateTodo
   }));
-  const handleCreateEventData = async ( name, date1) => {
+  const handleCreateEventData = async (name, date1) => {
     const taskText = name;
     const notesText = ''; // You can set notes based on your requirements
     const alarmTime = ''; // Set the alarm time if needed
     const isAlarmSet = false; // Set whether the alarm is on or off
-  
-    const creatTodo = {
+
+    const createTodo = {
       key: uuidv4(),
       date: date1,
       todoList: [
@@ -187,7 +187,6 @@ export default function Home({ navigation,Routes }) {
           alarm: {
             time: date1,
             isOn: isAlarmSet,
-            //createEventAsyncRes: createEventId,
           },
           color: `rgb(${Math.floor(Math.random() * Math.floor(256))},${Math.floor(
             Math.random() * Math.floor(256)
@@ -205,27 +204,27 @@ export default function Home({ navigation,Routes }) {
         ],
       },
     };
-  
+
     // Assuming updateTodo and updateCurrentTask functions are defined and work as expected
-    //navigation.navigate(Routes.HOME);
-    await updateTodo(creatTodo); // Assuming updateTodo expects an array of tasks
+    await updateTodo(createTodo); // Assuming updateTodo expects an array of tasks
     updateCurrentTask(currentDate);
-    console.log('creatTodo',creatTodo);
-    console.log('creatTodoa',creatTodo[0].alarm.time);
+    console.log('createTodo', createTodo);
+    console.log('createTodo alarm time', createTodo.todoList[0].alarm.time);
   };
-  
-  
+
   const handleCreateTasks = (parsedData) => {
     // Assuming createEventId is available in your component
-    handleCreateEventData( parsedData[0].Name, parsedData[0].Date);
+    parsedData.forEach((data) => {
+      handleCreateEventData(data.Name, data.Date);
+    });
   };
 
+  const [extractedNames, setExtractedNames] = useState([]);
 
-  const [extractedName, setExtractedName] = useState(null);
-
-  const handleNameExtracted = (name) => {
-    setExtractedName(name);
+  const handleNameExtracted = (names) => {
+    setExtractedNames(names);
   };
+
   const [todoList, setTodoList] = useState([]);
   const [markedDate, setMarkedDate] = useState([]);
   const [currentDate, setCurrentDate] = useState(
@@ -664,7 +663,9 @@ export default function Home({ navigation,Routes }) {
     alignItems: 'center'}}>
         <ExcelFetcherComponent
         onNameExtracted={handleNameExtracted}
-        onCreateTasks={handleCreateTasks}/>
+        onCreateTasks={handleCreateTasks}
+      />
+      <Text>Extracted Names: {extractedNames && extractedNames.join(', ')}</Text>
         <TouchableOpacity style={styles.signInButton} onPress={() => navigation.navigate('Setting')}>
   <Text style={{  color: '#fff'}}>Settings</Text>
 </TouchableOpacity>
